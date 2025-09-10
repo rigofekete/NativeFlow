@@ -1,0 +1,38 @@
+#include "../headers/resource.h"
+#include <windows.h>
+
+// Icon resource definition
+
+IDI_APPICON             ICON                    "../icon.ico"
+
+
+
+// Dark-themed dialog template //
+/////////////////////////////////
+//IDD_DARK_DIALOG DIALOGEX 0, 0, 250, 1
+IDD_DARK_DIALOG DIALOGEX 0, 0, 125, 95
+// DS_MODALFRAME removes the icon from the title bar of the dialog window
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Deadline"
+FONT 8, "Liberation Mono", 0, 0, 0x1
+BEGIN
+    CONTROL "URGENT", IDBUTTON1, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,     29, 20, 70, 15
+    CONTROL "SOON", IDBUTTON4, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,    29, 40, 70, 15
+    CONTROL "FREE", IDBUTTON3, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,  29, 60, 70, 15
+    // LTEXT "", IDC_STATIC, 10, 10, 240, 50
+END
+
+// Dark-themed deadline count dialog template just to display how mauch time left until the deadline //
+//////////////////////////////////
+IDD_COUNT_DIALOG DIALOGEX 0, 0, 120, 30
+// DS_MODALFRAME removes the icon from the title bar of the dialog window
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Deadline"
+FONT 8, "Liberation Mono", 0, 0, 0x1
+BEGIN
+    //CONTROL "URGENT", IDBUTTON1, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,     29, 20, 70, 15
+    //CONTROL "SOON", IDBUTTON4, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,    29, 40, 70, 15
+    //CONTROL "FREE", IDBUTTON3, "BUTTON", WS_TABSTOP | WS_VISIBLE | WS_CHILD,  29, 60, 70, 15
+    LTEXT "No deadline is set", IDC_STATIC, 10, 10, 240, 50
+    //LTEXT "", IDC_STATIC, 10, 10, 240, 50
+END

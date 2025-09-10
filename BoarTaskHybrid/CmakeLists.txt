@@ -1,0 +1,98 @@
+# # Minimum required version of CMake
+# cmake_minimum_required(VERSION 3.10)
+
+# set(CMAKE_TOOLCHAIN_FILE "C:/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
+# # Project name
+# project(BoarTaskHybrid)
+
+# # Set C++ standard
+# set(CMAKE_CXX_STANDARD 17)
+
+# add_definitions(-DUNICODE -D_UNICODE)
+
+# # Instead of adding each source file individually ......
+# # 
+# # # Add the source files
+# # add_executable(BoarTaskHybrid src/main.cpp src/subclasses.cpp src/globals.cpp)
+
+
+# # .... we do the following insted:
+
+# # Collect all source files in the src directory
+# file(GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+
+# # Add the collected source files to the executable
+# add_executable(BoarTaskHybrid ${SRC_FILES})
+
+# # Specify where to find header files
+# target_include_directories(BoarTaskHybrid PRIVATE ${CMAKE_SOURCE_DIR}/headers)
+
+# # This way we just point to which directory the compiler can find the src files and add as many as we wish without editing anything here
+
+# # Set up static linking for Boost
+# set(Boost_USE_STATIC_LIBS ON)
+# find_package(Boost REQUIRED COMPONENTS system)
+ 
+# # Link the GDI32 library, Boost and others
+# target_link_libraries(BoarTaskHybrid 
+#     PRIVATE                        
+#         gdi32
+#         Boost::system ) 
+
+# Minimum required version of CMake
+cmake_minimum_required(VERSION 3.10)
+
+# Add vcpkg toolchain file
+set(CMAKE_TOOLCHAIN_FILE "C:/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
+# Project name
+project(BoarTaskHybrid)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+
+add_definitions(-DUNICODE -D_UNICODE)
+
+# Set up static linking for Boost
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost REQUIRED COMPONENTS serialization)
+
+# Collect all source files in the src directory
+# Also adding the resources.rc file here (necessary to set up a custom icon *.ico file)
+file(GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/resources.rc)
+
+# Add the collected source files to the executable
+add_executable(BoarTaskHybrid ${SRC_FILES})
+
+
+set_target_properties(BoarTaskHybrid PROPERTIES
+    WIN32_EXECUTABLE TRUE    # This tells CMake it's a Windows GUI app
+)
+
+# Specify where to find header files
+target_include_directories(BoarTaskHybrid 
+    PRIVATE 
+        ${CMAKE_SOURCE_DIR}/headers
+        # include the path for the Boost headers
+        ${Boost_INCLUDE_DIRS}
+) 
+
+# Adding this to temporarily disable the warning I am getting for these type converions 
+# I will eventually come back to this to fix them and then deactivate this  
+if(MSVC)
+    # Disable specific MSVC warnings for the target
+    target_compile_options(BoarTaskHybrid PRIVATE
+        /wd4244  # Disable warning C4244: conversion from 'type1' to 'type2', possible loss of data
+        /wd4267  # Disable warning C4267: conversion from 'size_t' to 'type', possible loss of data
+    )
+endif()
+
+# Link the GDI32 library and Boost
+target_link_libraries(BoarTaskHybrid
+    PRIVATE
+        gdi32
+        Boost::serialization
+        comctl32
+        dwmapi
+)
