@@ -374,7 +374,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                                     // Use the collected current resolution and center it on screen, regardless of the resoltuion used. 
                                     screenWidth / 3,             // Centered X
                                     screenHeight / 42,           // Centered Y
-                                    800, 1200,                   // Width and Height
+                                    // 800, 1200,                   // Width and Height
+                                    800, 800,                   // Width and Height
                                     0,
                                     0,
                                     hInstance,

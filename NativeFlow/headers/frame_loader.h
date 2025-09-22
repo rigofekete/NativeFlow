@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "buffer_types.h"
+#include <cstdint>
 
 typedef uint8_t uint8;
 typedef uint16_t uint16;
