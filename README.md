@@ -9,10 +9,6 @@
 Prototype program written in C/C++, using the Win32 API and custom rendering libraries.  
 This was built to provide a native task management solution with **deadline tracking**, **cross-device synchronization**, and **dynamic visual feedback** through a custom frame processing system.
 
-More detailed information about use cases will be added soon, but here’s a simple example:  
-
-> Imagine you want a lightweight, high-performance task manager that doesn’t rely on web frameworks or heavy UI libraries, but instead leverages the full power of native Windows APIs for maximum system integration and responsiveness.
-
 ---
 
 ## 🖥️ Native UI & Behavior
