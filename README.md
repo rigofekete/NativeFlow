@@ -4,14 +4,14 @@
 
 ---
 
-## 📌 Description
+## Description
 
 Prototype program written in C/C++, using the Win32 API and custom rendering libraries.  
 This was built to provide a native task management solution with **deadline tracking**, **cross-device synchronization**, and **dynamic visual feedback** through a custom frame processing system.
 
 ---
 
-## 🖥️ Native UI & Behavior
+## Native UI & Behavior
 
 This program creates every UI element (windows, buttons, text fields, menus, etc.) directly through **Win32 API calls**, providing complete control over the interface behavior and appearance.  
 
@@ -23,12 +23,12 @@ The application also features a **custom frame processing and rendering system**
 
 ---
 
-## ✨ Implemented Features
+## Implemented Features
 
-- 🖼️ **Native Win32 UI architecture** with all interface elements built from scratch using direct API calls  
-- ⏰ **Comprehensive deadline management system** with internal logic for monitoring and tracking time-sensitive tasks  
-- ☁️ **Automatic data persistence and synchronization** to Dropbox storage path for multi-device and multi-user access  
-- 🎨 **Custom frame processing and rendering system** that provides dynamic visual feedback based on task states and user interactions  
+- **Native Win32 UI architecture** with all interface elements built from scratch using direct API calls  
+- **Comprehensive deadline management system** with internal logic for monitoring and tracking time-sensitive tasks  
+- **Automatic data persistence and synchronization** to Dropbox storage path for multi-device and multi-user access  
+- **Custom frame processing and rendering system** that provides dynamic visual feedback based on task states and user interactions  
 
 ---
 
