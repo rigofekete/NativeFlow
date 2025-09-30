@@ -1,7 +1,3 @@
-// NOTE: No need to define Unicode like this beacuse it is set in the CmakeList.txt :)
-// #define UNICODE
-// #define _UNICODE 
-
 // First, define this to prevent winsock.h from being included by windows.h
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
