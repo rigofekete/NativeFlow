@@ -881,11 +881,11 @@ LRESULT CALLBACK ListSubclassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
                     // Determine the new index based on key press
                     if (wParam == VK_DOWN) 
                     {
-                        newIndex = min(currentIndex + 1, (int)CustomListBoxState.tasks.size() - 1);
+                        newIndex = std::min(currentIndex + 1, (int)CustomListBoxState.tasks.size() - 1);
                     } 
                     else if (wParam == VK_UP) 
                     {
-                        newIndex = max(currentIndex - 1, 0);
+                        newIndex = std::max(currentIndex - 1, 0);
                     }
 
                     if (newIndex != currentIndex) 
@@ -1257,7 +1257,7 @@ LRESULT CALLBACK ListSubclassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
                     {
                         RECT hoverRect;
                         SendMessage(hwnd, LB_GETITEMRECT, CustomListBoxState.hoveredIndex, (LPARAM)&hoverRect);
-                        hoverRect.right = min(hoverRect.right, 300);
+                        hoverRect.right = std::min((int)hoverRect.right, 300);
                         InvalidateRect(hwnd, &hoverRect, FALSE);
                     }
                 }
@@ -1762,7 +1762,7 @@ LRESULT CALLBACK ListSubclassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
                 // task.blueCharCount = (newCount <= textLength) ? newCount : textLength;
 
                 // TODO: Check why is the blueCharCount increasing like crazy 
-                task.blueCharCount = min(newCount, textLength);
+                task.blueCharCount = std::min(newCount, textLength);
 
                 if(task.blueCharCount < textLength)
                 {
@@ -1959,7 +1959,7 @@ LRESULT CALLBACK ListSubclassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
             CustomListBoxState.selectedIndex = -1;
             RECT clientRect;
             GetClientRect(hwnd, &clientRect);
-            clientRect.right = min(clientRect.right, 300);
+            clientRect.right = std::min((int)clientRect.right, 300);
             InvalidateRect(hwnd, &clientRect, FALSE);
             
             // InvalidateRect(hwnd, NULL, TRUE);
