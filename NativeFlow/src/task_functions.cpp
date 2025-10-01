@@ -211,7 +211,7 @@ namespace TaskFunctions
                 // Calculate actual task bounds within item rect
                 RECT taskBounds = itemRect;
                 taskBounds.left += taskXPadding;
-                taskBounds.right = min(taskBounds.left + maxTaskWidth, CustomListBoxState.tasks[index].bounds.right);
+                taskBounds.right = std::min(taskBounds.left + maxTaskWidth, CustomListBoxState.tasks[index].bounds.right);
 
                 if(PtInRect(&taskBounds, mousePoint))
                 {
