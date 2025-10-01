@@ -1,3 +1,7 @@
+// NOTE: No need to define Unicode like this beacuse it is set in the CmakeList.txt :)
+// #define UNICODE
+// #define _UNICODE 
+
 // First, define this to prevent winsock.h from being included by windows.h
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -20,15 +24,9 @@
 
 #include "globals.h"
 #include "task_storage.h"
-
-#include <windows.h>
 #include "subclasses.h"
 #include "task_functions.h"
-#include "frame_loader.h"
 #include "resource.h"
-
-
-#include <windows.h>
 #include <string>
 
 // Returns true if the system is Windows 11 (build >= 22000)
@@ -114,61 +112,6 @@ internal win32_window_dimension Win32GetWindowDimension(HWND Window)
     return Result;
 }
 
-
-internal void RenderWeirdGradient(win32_onscreen_buffer *Buffer, int BlueOffset, int GreenOffset)
-{
-    uint8 *Row = (uint8 *)Buffer->Memory;
-    for(int Y = 0; Y < Buffer->Height; ++Y)
-    {
-        uint32 *Pixel = (uint32 *)Row;
-        for(int X = 0; X < Buffer->Width; ++X)
-        {
-            uint8 Blue = (X + BlueOffset);
-            uint8 Green = (Y + GreenOffset);
-
-            *Pixel++ = ((Green << 8) | Blue);
-        }
-
-        Row += Buffer->Pitch;
-    }
-}
-
-
-// Original unmodified version 
-// // Creating the backbuffer 
-// internal void Win32ResizeDIBSection(win32_onscreen_buffer *Buffer, int Width, int Height)
-// {
-    
-//     if(Buffer->Memory)
-//     {
-//         VirtualFree(Buffer->Memory, 0, MEM_RELEASE);
-//     }
-
-//     Buffer->Width = Width;
-//     Buffer->Height = Height;
-//     int BytesPerPixel = 4;
-
-//     Buffer->Info.bmiHeader.biSize = sizeof(Buffer->Info.bmiHeader);
-//     Buffer->Info.bmiHeader.biWidth = Buffer->Width;
-//     Buffer->Info.bmiHeader.biHeight = -Buffer->Height;
-//     Buffer->Info.bmiHeader.biPlanes = 1;
-//     Buffer->Info.bmiHeader.biBitCount = 32;
-//     Buffer->Info.bmiHeader.biCompression = BI_RGB;
-//     // rest of the members are set to 0 through the static global declaration of BitmapInfo
-    
-//     int BitmapMemorySize = (Buffer->Width*Buffer->Height)*BytesPerPixel;
-//     Buffer->Memory = VirtualAlloc(0, BitmapMemorySize, MEM_COMMIT, PAGE_READWRITE);
-
-
-//     Buffer->Pitch = Width*BytesPerPixel;
-
-//     // // Debug message check 
-//     // MessageBox(0, L"Win32ResizeDIBSection", L"Check", MB_OK);
-// }
-
-// internal void Win32UpdateWindow(win32_onscreen_buffer *Buffer, HDC DeviceContext, 
-//                               int WindowWidth, int WindowHeight)
-
 internal void UpdateWindowPlayFrame(HDC DeviceContext, 
                               int WindowWidth, int WindowHeight)
 {
@@ -205,19 +148,21 @@ internal void UpdateWindowPlayFrame(HDC DeviceContext,
         ScreenToClient(GetParent(hListBox), &listBoxBottomRight);
 
         // Position frame to the right of the list box with proper spacing
-        int frameX = listBoxTopLeft.x + maxTaskWidth + (5 * MARGIN);
+        int frameX = listBoxTopLeft.x + maxTaskWidth + (5*MARGIN);
         int frameY = listBoxTopLeft.y;  // Align with top of listbox
 
         // Calculate available space considering listbox position
-        int availableWidth = WindowWidth - frameX - MARGIN;
+        int availableWidth = WindowWidth - frameX - (5*MARGIN);
         int availableHeight = listBoxBottomRight.y - listBoxTopLeft.y;  // Match listbox height
         
         float scaleX = (float)availableWidth / CurrentFrame->Buffer.Width;
         float scaleY = (float)availableHeight / CurrentFrame->Buffer.Height;
-        float scale = min(scaleX, scaleY);
+        float scale = std::min(scaleX, scaleY);
         
-        int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale - 0.3));
-        int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale - 0.3));
+        // int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale - 0.3));
+        int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale));
+        // int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale - 0.3));
+        int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale));
 
         // Center vertically within available space if scaled height is less than available height
         if (scaledHeight < availableHeight) {
@@ -246,63 +191,65 @@ internal void UpdateWindowPlayFrame(HDC DeviceContext,
     }
 }
 
-internal void UpdateWindowSingleFrame(HDC DeviceContext, 
-                              int WindowWidth, int WindowHeight)
-{
-        if(!GlobalAnimation.Frames.empty())
-        {
-            animation_frame *CurrentFrame = 
-                &GlobalAnimation.Frames[GlobalAnimation.CurrentFrame];
 
-            // Get listbox dimensions
-            RECT listBoxRect;
-            GetWindowRect(hListBox, &listBoxRect);
-            POINT listBoxTopLeft = {listBoxRect.left, listBoxRect.top};
-            POINT listBoxBottomRight = {listBoxRect.right, listBoxRect.bottom};
-            ScreenToClient(GetParent(hListBox), &listBoxTopLeft);
-            ScreenToClient(GetParent(hListBox), &listBoxBottomRight);
+// // Frame test function 
+// internal void UpdateWindowSingleFrame(HDC DeviceContext, 
+//                               int WindowWidth, int WindowHeight)
+// {
+//         if(!GlobalAnimation.Frames.empty())
+//         {
+//             animation_frame *CurrentFrame = 
+//                 &GlobalAnimation.Frames[GlobalAnimation.CurrentFrame];
 
-            // Position frame to the right of the list box with proper spacing
-            int frameX = listBoxTopLeft.x + maxTaskWidth + (2 * MARGIN);
-            int frameY = listBoxTopLeft.y;  // Align with top of listbox
+//             // Get listbox dimensions
+//             RECT listBoxRect;
+//             GetWindowRect(hListBox, &listBoxRect);
+//             POINT listBoxTopLeft = {listBoxRect.left, listBoxRect.top};
+//             POINT listBoxBottomRight = {listBoxRect.right, listBoxRect.bottom};
+//             ScreenToClient(GetParent(hListBox), &listBoxTopLeft);
+//             ScreenToClient(GetParent(hListBox), &listBoxBottomRight);
 
-            // Calculate available space considering listbox position
-            int availableWidth = WindowWidth - frameX - MARGIN;
-            int availableHeight = listBoxBottomRight.y - listBoxTopLeft.y;  // Match listbox height
+//             // Position frame to the right of the list box with proper spacing
+//             int frameX = listBoxTopLeft.x + maxTaskWidth + (2 * MARGIN);
+//             int frameY = listBoxTopLeft.y;  // Align with top of listbox
+
+//             // Calculate available space considering listbox position
+//             int availableWidth = WindowWidth - frameX - MARGIN;
+//             int availableHeight = listBoxBottomRight.y - listBoxTopLeft.y;  // Match listbox height
             
-            float scaleX = (float)availableWidth / CurrentFrame->Buffer.Width;
-            float scaleY = (float)availableHeight / CurrentFrame->Buffer.Height;
-            float scale = min(scaleX, scaleY);
+//             float scaleX = (float)availableWidth / CurrentFrame->Buffer.Width;
+//             float scaleY = (float)availableHeight / CurrentFrame->Buffer.Height;
+//             float scale = std::min(scaleX, scaleY);
             
-            int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale - 0.3));
-            int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale - 0.3));
+//             int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale - 0.3));
+//             int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale - 0.3));
 
-            // Center vertically within available space if scaled height is less than available height
-            if (scaledHeight < availableHeight) {
-                frameY += (availableHeight - scaledHeight) / 2;
-            }
+//             // Center vertically within available space if scaled height is less than available height
+//             if (scaledHeight < availableHeight) {
+//                 frameY += (availableHeight - scaledHeight) / 2;
+//             }
 
-            // Create clipping region to prevent drawing over listbox
-            HRGN clipRegion = CreateRectRgn(
-                frameX, frameY,
-                frameX + scaledWidth,
-                frameY + scaledHeight
-            );
-            SelectClipRgn(DeviceContext, clipRegion);
+//             // Create clipping region to prevent drawing over listbox
+//             HRGN clipRegion = CreateRectRgn(
+//                 frameX, frameY,
+//                 frameX + scaledWidth,
+//                 frameY + scaledHeight
+//             );
+//             SelectClipRgn(DeviceContext, clipRegion);
 
-            // Draw the frame
-            StretchDIBits(DeviceContext,
-                        frameX, frameY, scaledWidth, scaledHeight,
-                        0, 0, CurrentFrame->Buffer.Width, CurrentFrame->Buffer.Height,
-                        CurrentFrame->Buffer.Memory,
-                        &CurrentFrame->Buffer.Info,
-                        DIB_RGB_COLORS, SRCCOPY);
+//             // Draw the frame
+//             StretchDIBits(DeviceContext,
+//                         frameX, frameY, scaledWidth, scaledHeight,
+//                         0, 0, CurrentFrame->Buffer.Width, CurrentFrame->Buffer.Height,
+//                         CurrentFrame->Buffer.Memory,
+//                         &CurrentFrame->Buffer.Info,
+//                         DIB_RGB_COLORS, SRCCOPY);
 
-            // Clean up
-            SelectClipRgn(DeviceContext, NULL);
-            DeleteObject(clipRegion);
-        }
-}
+//             // Clean up
+//             SelectClipRgn(DeviceContext, NULL);
+//             DeleteObject(clipRegion);
+//         }
+// }
 
 
 
@@ -524,7 +471,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                         DispatchMessage(&msg);
                     }
                 }
-
+                
+                // Test calls 
                 // win32_window_dimension Dimension = Win32GetWindowDimension(window);
                 // UpdateWindowSingleFrame(DeviceContext, Dimension.Width, Dimension.Height);
  
@@ -799,7 +747,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 
                 float scaleX = (float)availableWidth / CurrentFrame->Buffer.Width;
                 float scaleY = (float)availableHeight / CurrentFrame->Buffer.Height;
-                float scale = min(scaleX, scaleY);
+                float scale = std::min(scaleX, scaleY);
                 
                 int scaledWidth = (int)(CurrentFrame->Buffer.Width * (scale + 1));
                 int scaledHeight = (int)(CurrentFrame->Buffer.Height * (scale + 1));
@@ -904,7 +852,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             // Use the height that fits complete items
             int listBoxHeight = (numItems > 0) ? completeItemsHeight : availableHeight;
-            listBoxHeight = max(listBoxHeight, taskHeight); // Ensure minimum height
+            listBoxHeight = std::max(listBoxHeight, taskHeight); // Ensure minimum height
 
             // Get current scroll info
             SCROLLINFO si = { sizeof(SCROLLINFO) };
@@ -1003,7 +951,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 // wrappedHeight += (2 * taskYSpacing);  // Using your global spacing constant
 
                 // Set minimum height
-                wrappedHeight = max(wrappedHeight, editBoxHeight);
+                wrappedHeight = std::max(wrappedHeight, editBoxHeight);
 
                 // Resize the edit box
                 SetWindowPos(hEditBox, NULL,
@@ -1160,7 +1108,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 RECT clearRect = dis->rcItem;
                 clearRect.left = 0;
                 // TODO: Test x > 300 fix 
-                clearRect.right = min(maxTaskWidth, 300);
+                clearRect.right = std::min(maxTaskWidth, 300);
                 // clearRect.right = maxTaskWidth;
                 
                 // Extend the clear area to include the spacing between items
@@ -1187,7 +1135,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 int currentWidth = (textSize.cx + 15) + (taskXPadding * 2); 
                 // rcItem.right = (currentWidth > maxTaskWidth) ? maxTaskWidth : currentWidth;
                 // TODO: Test x > 300 fix 
-                rcItem.right = min((currentWidth > maxTaskWidth) ? maxTaskWidth : currentWidth, 300);
+                rcItem.right = std::min((currentWidth > maxTaskWidth) ? maxTaskWidth : currentWidth, 300);
 
 
                 RECT testRect = rcItem;
@@ -1205,7 +1153,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                         DT_WORDBREAK | DT_LEFT | DT_CALCRECT);
 
                 int textHeight = testRect.bottom - testRect.top + tm.tmDescent;
-                int totalHeight = max(textHeight + (2 * taskYSpacing), taskHeight);
+                int totalHeight = std::max(textHeight + (2 * taskYSpacing), taskHeight);
 
                 // TODO: Check better to learn it. VSCROLL related call. 
                 SendMessage(hListBox, LB_SETITEMHEIGHT, dis->itemID, totalHeight + taskYSpacing);
