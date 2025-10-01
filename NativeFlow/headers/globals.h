@@ -6,14 +6,15 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+
 // these ones below are the Boost library includes 
 #include <boost/serialization/string.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
 #include <SDKDDKVer.h>  // This one is needed for the subclassing of the Edit Ctrl fot the List Box
-#include <windows.h>
-
+#include <algorithm>
+#include "windows.h"
 // We need to add these to control the Windows themes so we can chnge and set a darker one for our List Box 
 // IMPORTANT: we need to set these after the WIN#@_LEAN_AND_MEAN and windows.h
 #include <uxtheme.h>
@@ -21,6 +22,13 @@
 #pragma comment(lib, "uxtheme.lib")
 #pragma comment(lib, "dwmapi.lib")
 
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
+
+#ifndef DWMWA_CAPTION_COLOR
+#define DWMWA_CAPTION_COLOR 35
+#endif
 
 #include <windowsx.h>
 #include <commctrl.h> // This one is needed for the subclassing of the Edit Ctrl for the List Box
